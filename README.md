@@ -29,7 +29,8 @@ Software y herramientas:
 * PHP 
 * Ajax
 * Bootstrap 
-* MySQL 
+* MySQL
+* Python
 
 ### Proyecto desarrollado por
    ```sh
