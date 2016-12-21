@@ -2,7 +2,7 @@ import serial
 import MySQLdb
 import time
 
-ser = serial.Serial('/dev/ttyACM0', 9600)
+ser = serial.Serial('/dev/ttyACM0', 9600) 
 db = MySQLdb.connect("localhost", "monitor", "arduino", "plantas")
 
 cursor = db.cursor()
