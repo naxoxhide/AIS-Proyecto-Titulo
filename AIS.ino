@@ -18,7 +18,6 @@ int moistureSensor2Value;
 int photoresistorSensorValue;
 dht DHT; 
 
-
 // Mensajes de sistemas
 const char *string_table[] =
 {   
@@ -33,10 +32,9 @@ const char *string_table[] =
 };
 
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
-  
+ 
   void setup() {
   Serial.begin(9600);
-
 
   // LCD
   lcd.begin(16,2); 
@@ -70,7 +68,9 @@ void loop() {
   moistureSensor2Value = analogRead(moistureSensor2Pin);
   photoresistorSensorValue = analogRead(A3);
   DHT.read11(dht_apin);
-
+  
+ //Encendido y apagado de bomba por separado, para evitar que al momento de detectar un solo perfil seco y otro humedo la bomba no se
+ // apague 
 if((moistureSensor1Value > 650) || (moistureSensor2Value > 650)) {
     digitalWrite(pumpPin,LOW);
     Serial.println("Pump On ");
