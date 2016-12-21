@@ -8,7 +8,7 @@
 # Default-Stop: 0 1 6
 # Short-Description: ais regadio automatico con arduino y raspberry pi 
 # Description: Script de inicio para Debian para Arduino y el envio de datos 
-#			por seria la MySQL.
+#			por serial a MySQL.
 ### END INIT INFO
 
 . /lib/lsb/init-functions
