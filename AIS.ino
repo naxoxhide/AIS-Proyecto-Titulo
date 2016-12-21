@@ -1,4 +1,3 @@
-#include <SoftwareSerial.h>
 #include <dht.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
@@ -18,15 +17,6 @@ int moistureSensor1Value;
 int moistureSensor2Value;
 int photoresistorSensorValue;
 dht DHT; 
-int triggersend=0;  
-
-#define SSID ""    // SSID
-#define PASS ""      // contraseña de la red
-#define HOST ""  // Webhost (ip o dirección)
-
-#define PASSCODE ""
-
-#define SENDDELAY 180  // Seconds between sending data. Try to keep under 3 digits.
 
 // Mensajes de sistemas
 const char *string_table[] =
@@ -41,15 +31,10 @@ const char *string_table[] =
   "A.I.S"
 };
 
-int errorcount = 0;    // Variable para ejecutar mensaje de error.
-// 1: ESP8266 error
-int errortype = 0;
-
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
-  
+ 
   void setup() {
   Serial.begin(9600);
-
 
   // LCD
   lcd.begin(16,2); 
@@ -83,7 +68,9 @@ void loop() {
   moistureSensor2Value = analogRead(moistureSensor2Pin);
   photoresistorSensorValue = analogRead(A3);
   DHT.read11(dht_apin);
-
+  
+ //Encendido y apagado de bomba por separado, para evitar que al momento de detectar un solo perfil seco y otro humedo la bomba no se
+ // apague 
 if((moistureSensor1Value > 650) || (moistureSensor2Value > 650)) {
     digitalWrite(pumpPin,LOW);
     Serial.println("Pump On ");
@@ -194,64 +181,4 @@ if(moistureSensor2Value < 300){
     digitalWrite(valvule2Pin,HIGH);
     Serial.println("Valvule Off ");
   }
-
-  if(triggersend == SENDDELAY){
-      sendData(String(moistureSensor1Value), String(moistureSensor2Value), String(photoresistorSensorValue) float(DHT));  // Call function to send data to Thing Speak.
-      triggersend = 0;
-}
- void sendData(String moistureSensor1Value, String moistureSensor2Value, String photoresistorSensorValue float DHT){
-  // COnfigurar conexión TCP.
-  String cmd = "AT+CIPSTART=\"TCP\",\"";
-  cmd += HOST;
-  cmd += "\",80";
-  Serial.println(cmd);
-  delay(2000);
-  if(Serial.find("Error")){
-    errortype = 1; 
-    errorcount = 1;   
-    return;
-  }
-
-  // Send data.
-  cmd = "GET /esp8266/data.php?code=";
-  cmd += PASSCODE;
-  cmd += "&h1=";
-  cmd += moistureSensor1Value;
-  cmd += "&h2=";
-  cmd += moistureSensor2Value;
-  cmd += "&l=";
-  cmd += photoresistorSensorValue;
-  cmd += "&t=";
-  cmd += DHT;
-  cmd += " HTTP/1.1\r\nHost:  \r\n\r\n\r\n"; //el mismo webhost settiado en las configuraciones de red 
-  Serial.print("AT+CIPSEND=");
-  Serial.println(cmd.length());
-  if(Serial.find(">")){
-    Serial.print(cmd);
-  }
-  else{
-    errortype = 1; 
-    errorcount=1;  
-    Serial.println("AT+CIPCLOSE");
-  }
-}
-
-
-boolean connectWiFi(){
-  Serial.println("AT+CWMODE=1");
-  delay(2000);
-  String cmd="AT+CWJAP=\"";
-  cmd+=SSID;
-  cmd+="\",\"";
-  cmd+=PASS;
-  cmd+="\"";
-  Serial.println(cmd);
-  delay(5000);
-  if(Serial.find("OK")){
-    return true;
-  }
-  else{
-    return false;
-  }
-}
 }
