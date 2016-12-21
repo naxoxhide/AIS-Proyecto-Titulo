@@ -35,7 +35,7 @@ case "$1" in
         start-stop-daemon --stop --oknodo --quiet --pidfile /var/run/$NOMBRE.pid
         log_end_msg $?
         ;;
-    restart)
+    restart) 
         log_daemon_msg "Reiniciando $DESCRIPCION" "$NOMBRE"
         start-stop-daemon --stop --oknodo --quiet --pidfile /var/run/$NOMBRE.pid
         sleep 1
