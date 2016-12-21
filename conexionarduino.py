@@ -1,0 +1,40 @@
+import serial
+import MySQLdb
+import time
+
+ser = serial.Serial('/dev/ttyACM0', 9600)
+db = MySQLdb.connect("localhost", "monitor", "arduino", "plantas")
+
+cursor = db.cursor()
+
+while 1:
+	print("Esperando datos...")
+	print("")
+	print("Recolectando datos...")
+	print("")
+	hp1 = ser.readline()
+	time.sleep(1)
+	lp1 = ser.readline()
+	time.sleep(1)
+	tp1 = ser.readline()
+	time.sleep(1)
+	hp2 = ser.readline()
+	time.sleep(1)
+	lp2 = ser.readline()
+	time.sleep(1)
+	tp2 = ser.readline()
+	time.sleep(1)
+	hp1 = int(hp1)
+	lp1 = int(lp1)
+	tp1 = float(tp1)
+	hp2 = int(hp2)
+	lp2 = int(lp2)
+	tp2 = float(tp2)
+	print("Insertando datos en la base de datos")
+	print("")
+	time.sleep(5)
+	sql1 = "update perfil set temperatura = %s, humedad = %s where posicion = 1" % (tp1, hp1)
+	sql2 = "update perfil set temperatura = %s, humedad = %s where posicion = 2" % (tp2, hp2)
+	cursor.execute(sql1)
+	cursor.execute(sql2)
+	db.commit()
